@@ -1,0 +1,5 @@
+{
+    "DB" : {
+        "source" : "dbi:SQLite:dbname=database.db","","");
+    }
+}
