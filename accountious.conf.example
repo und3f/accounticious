@@ -1,5 +1,7 @@
 {
     "DB" : {
-        "source" : "dbi:SQLite:dbname=database.db","","");
+        "source" : "dbi:SQLite:dbname=database.db",
+        "username" : null,
+        "password" : null
     }
 }
