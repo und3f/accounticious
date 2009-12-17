@@ -21,7 +21,9 @@ sub _load_config_file {
             close FILE;
             my $source = join '', map { $_=~s/\#.*$//;chomp;$_ } @lines;
             my $json = Mojo::JSON->new;
-            my $json_config = $json->decode( $source ) or $self->log->fatal("JSON parsing failed: ", $json->error);
+            my $json_config = $json->decode( $source );
+            $self->log->fatal("JSON parsing failed: ", $json->error)
+                unless $json_config;
             %config = (%config, %$json_config);
         };
     };
@@ -48,6 +50,8 @@ sub startup {
     my $r = $self->routes;
 
     # Routes
+    $r->route('/')
+      ->to(controller => 'account', action => 'index');
 
 }
 
