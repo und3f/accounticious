@@ -1,4 +1,4 @@
-package Accountious;
+package Accounticious;
 
 our $VERSION = 0.1;
 
@@ -34,7 +34,7 @@ sub startup {
     my $self = shift;
 
     # Load configuration
-    $self->_load_config_file( $self->home->rel_file('accountious.conf') );
+    $self->_load_config_file( $self->home->rel_file('accounticious.conf') );
 
     # Use latests templates
     $self->renderer->default_handler('ep');

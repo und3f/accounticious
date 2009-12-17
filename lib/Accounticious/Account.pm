@@ -1,4 +1,4 @@
-package Accountious::Account;
+package Accounticious::Account;
 
 use strict;
 use warnings;
