@@ -1,7 +1,9 @@
 {
-    "DB" : {
-        "source" : "dbi:SQLite:dbname=database.db",
-        "username" : null,
-        "password" : null
-    }
+    "DB" : [
+        "dbi:SQLite:/home/und3f/projects/accounticious/database.db",
+        # username
+        null,
+        # password
+        null
+    ]
 }

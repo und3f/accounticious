@@ -5,9 +5,11 @@ our $VERSION = 0.1;
 use strict;
 use warnings;
 
-use base 'Mojolicious';
-
 use Mojo::JSON ();
+use DBI ();
+use MojoX::Session ();
+
+use base 'Mojolicious';
 
 my %config = (
     loglevel    => 'debug',
@@ -29,10 +31,31 @@ sub _load_config_file {
     };
 };
 
+# Do it on every request
+sub process {
+    my ($self, $c) = @_;
+
+    # Connect to DB
+    my $dbh  = DBI->connect( 
+        @{$config{DB}},
+        {
+            PrintWarn  => 1,
+            PrintError => 1,
+        },
+    );
+
+    #$c->session->tx( $c->tx )->store->dbh( $dbh );
+
+    $self->dispatch( $c );
+}
+
 # This method will run once at server start
 sub startup {
     my $self = shift;
 
+    # Use our own controller
+    $self->controller_class( 'Accounticious::Controller' );
+    
     # Load configuration
     $self->_load_config_file( $self->home->rel_file('accounticious.conf') );
 
