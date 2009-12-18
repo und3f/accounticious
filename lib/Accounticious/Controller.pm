@@ -5,7 +5,7 @@ use warnings;
 
 use base 'Mojolicious::Controller';
 
-#__PACKAGE__->attr
+__PACKAGE__->attr([qw/ db session /]);
 
 sub new {
     my $class = shift;

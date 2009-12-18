@@ -63,3 +63,10 @@ CREATE TABLE user (
     FOREIGN KEY (account) REFERENCES account(account_id)
 );
 
+CREATE TABLE session (
+   sid          VARCHAR(40) PRIMARY KEY,
+   data         TEXT,
+   expires      INTEGER UNSIGNED NOT NULL,
+   UNIQUE(sid)
+);
+

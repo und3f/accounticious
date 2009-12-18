@@ -12,7 +12,8 @@ use MojoX::Session ();
 use base 'Mojolicious';
 
 my %config = (
-    loglevel    => 'debug',
+    loglevel        => 'debug',
+    session_expires => 60 * 60 * 24 * 3,
 );
 
 sub _load_config_file {
@@ -44,7 +45,14 @@ sub process {
         },
     );
 
-    #$c->session->tx( $c->tx )->store->dbh( $dbh );
+    $c->db( $dbh );
+
+    $c->session( MojoX::Session->new(
+            tx              => $c->tx,
+            store => [dbi   => {dbh => $dbh}],
+            transport       => 'cookie',
+            expires_delta   => $config{session_expires},
+    ));
 
     $self->dispatch( $c );
 }
