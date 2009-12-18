@@ -10,8 +10,8 @@ CREATE TABLE account (
 CREATE TABLE balance (
     account     INTEGER NOT NULL,
     currency    CHAR(3) NOT NULL,
-    -- Amount of maney in specified currency
-    Amount      REAL,
+    -- Amount of money in specified currency
+    amount      REAL,
 
     FOREIGN KEY (account) REFERENCES account(account_id),
     PRIMARY KEY (account, currency)
