@@ -82,7 +82,7 @@ sub startup {
 
     # Routes
     $r->route('/')
-      ->to(controller => 'account', action => 'index');
+      ->to(controller => 'auth', action => 'login');
 
 }
 
