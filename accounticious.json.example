@@ -1,9 +1,10 @@
 {
-    "DB" : [
+    "db" : [
         "dbi:SQLite:/home/und3f/projects/accounticious/database.db",
-        # username
+%#      username
         null,
-        # password
+
+%#      password
         null
     ]
 }

@@ -7,7 +7,6 @@ use warnings;
 
 use Mojo::JSON ();
 use DBI ();
-use MojoX::Session ();
 
 use base 'Mojolicious';
 
@@ -15,47 +14,6 @@ my %config = (
     loglevel        => 'debug',
     session_expires => 60 * 60 * 24 * 3,
 );
-
-sub _load_config_file {
-    my ($self, $conf_file) = @_;
-    if (-e $conf_file) {
-        if (open FILE, '<', $conf_file) {
-            my @lines = <FILE>;
-            close FILE;
-            my $source = join '', map { $_=~s/\#.*$//;chomp;$_ } @lines;
-            my $json = Mojo::JSON->new;
-            my $json_config = $json->decode( $source );
-            $self->log->fatal("JSON parsing failed: ", $json->error)
-                unless $json_config;
-            %config = (%config, %$json_config);
-        };
-    };
-};
-
-# Do it on every request
-sub process {
-    my ($self, $c) = @_;
-
-    # Connect to DB
-    my $dbh  = DBI->connect( 
-        @{$config{DB}},
-        {
-            PrintWarn  => 1,
-            PrintError => 1,
-        },
-    );
-
-    $c->db( $dbh );
-
-    $c->session( MojoX::Session->new(
-            tx              => $c->tx,
-            store => [dbi   => {dbh => $dbh}],
-            transport       => 'cookie',
-            expires_delta   => $config{session_expires},
-    ));
-
-    $self->dispatch( $c );
-}
 
 # This method will run once at server start
 sub startup {
@@ -65,7 +23,7 @@ sub startup {
     $self->controller_class( 'Accounticious::Controller' );
     
     # Load configuration
-    $self->_load_config_file( $self->home->rel_file('accounticious.conf') );
+    %config = ( %config, %{$self->plugin('json_config')} );
 
     # Use latests templates
     $self->renderer->default_handler('ep');
@@ -76,14 +34,109 @@ sub startup {
     # Logging
     $self->log->level( $config{loglevel} );
     $self->mode( 'production' ) if $self->log->level ne 'debug';
+
+    # Database 
+    $self->plugin(
+        database => [
+            @{$config{db}},
+            {
+                PrintWarn  => 1,
+                PrintError => 1,
+            }, 
+        ]
+    );
+
+    # Install sessions
+    $self->plugin(
+        session => {
+            stash_key       => 'session',
+            store           => 'dbi',
+            expires_delta   => $config{session_expires},
+            init            => sub {
+                my ( $self, $session ) = @_;
+                $session->store->dbh( $self->stash->{db}->dbh );
+            },
+        }
+    );
     
     # Routes
-    my $r = $self->routes;
+    my $auth = $self->routes->bridge->to( 'auth#auth' );
 
-    # Routes
-    $r->route('/')
-      ->to(controller => 'auth', action => 'login');
+    $auth->route( '/login' )
+        ->to( 'auth#login', error_code  => '')
+        ->name( 'login' );
+
+    $auth->route( '/login_do' )
+        ->to( 'auth#login_do', error_code  => '')
+        ->name( 'login_do' );
+
+    $auth->route( '/logout' )
+        ->to( 'auth#logout' )
+        ->name( 'logout' );
+
+    $auth->route('/')
+        ->to( 'auth#root' )
+        ->name( 'root' );
+
+    $auth->route('/account')
+        ->to( 'account#index' )
+        ->name( 'account' );
 
 }
+
+1;
+
+package Mojolicious::Plugin::Database;
+
+use strict;
+use warnings;
+
+use DBI;
+use DBIx::Simple;
+
+use base 'Mojolicious::Plugin';
+
+our @cache;
+
+sub register {
+    my ($self, $app, $db_config) = @_;
+
+    # Connect
+    $app->plugins->add_hook(
+        before_dispatch => sub {
+            my ( $self, $c ) = @_;
+
+            return if ( $c->res->code );
+
+            my $cached = shift @cache;
+            if ( defined $cached ) {
+                $c->stash( db => $cached );
+                return;
+            }
+
+            my $dbh = DBI->connect( @$db_config )
+                or die 'DBI connect failed';
+
+            # dbi
+            my $db = DBIx::Simple->connect( $dbh )
+                or die DBIx::Simple->error;
+
+            $c->stash( db => $db );
+
+            return;
+        }
+    );
+
+    # Cache
+    $app->plugins->add_hook(
+        after_dispatch => sub {
+            my ( $self, $c ) = @_;
+            return unless my $db = $c->db;
+            push( @cache, $db );
+            $c->stash( db => undef );
+        }
+    );
+}
+
 
 1;

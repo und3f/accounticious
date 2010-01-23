@@ -1,6 +1,18 @@
 % layout 'external';
 <h2>Login to Accounticious</h2>
-<form method="POST">
+
+<div id="error">
+% if ( $error_code eq 'INVALID' ) {
+Invalid username or password
+% }
+% elsif ( $error_code eq 'REQUIRED' ) {
+Authorithation required
+% }
+</div>
+
+<br />
+
+<form method="POST" action="<%== url_for( 'login_do' ) %>">
 <label for="login_username">login:</label>
 <input type="edit" name="username" id="login_username" />
 <br />
