@@ -18,16 +18,11 @@ sub check_login {
     return $user_id;
 }
 
-sub login {
-    my $self = shift;
-}
-
 sub login_do {
     my $self = shift;
 
     my $p = $self->req->params->to_hash;
 
-    print "Here\n";
     if ( defined $p->{username} && $p->{username} ne ''
         && defined $p->{password} && $p->{password} ne '' ) {
 
@@ -69,6 +64,10 @@ sub logout {
 sub auth {
     my $self = shift;
 
+    unless ($self->session->load) {
+        $self->redirect( 'login' );
+        return undef;
+    }
 }
 
 1;

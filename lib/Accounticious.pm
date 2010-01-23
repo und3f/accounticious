@@ -60,24 +60,25 @@ sub startup {
     );
     
     # Routes
-    my $auth = $self->routes->bridge->to( 'auth#auth' );
+    my $r = $self->routes;
 
-    $auth->route( '/login' )
+    $r->route( '/login' )
         ->to( 'auth#login', error_code  => '')
         ->name( 'login' );
 
-    $auth->route( '/login_do' )
+    $r->route( '/login_do' )
         ->to( 'auth#login_do', error_code  => '')
         ->name( 'login_do' );
 
-    $auth->route( '/logout' )
+    $r->route( '/logout' )
         ->to( 'auth#logout' )
         ->name( 'logout' );
 
-    $auth->route('/')
+    $r->route('/')
         ->to( 'auth#root' )
         ->name( 'root' );
 
+    my $auth = $r->bridge->to( 'auth#auth' );
     $auth->route('/account')
         ->to( 'account#index' )
         ->name( 'account' );
