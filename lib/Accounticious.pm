@@ -83,6 +83,14 @@ sub startup {
         ->to( 'account#index' )
         ->name( 'account' );
 
+    $auth->route('/account/insert')
+        ->to( 'account#insert_record' )
+        ->name( 'insert' );
+
+    $auth->route('/account/history/:account_id')
+        ->to( 'account#history' )
+        ->name( 'history' );
+
 }
 
 1;
@@ -92,8 +100,7 @@ package Mojolicious::Plugin::Database;
 use strict;
 use warnings;
 
-use DBI;
-use DBIx::Simple;
+use Accounticious::Model;
 
 use base 'Mojolicious::Plugin';
 
@@ -115,12 +122,9 @@ sub register {
                 return;
             }
 
-            my $dbh = DBI->connect( @$db_config )
-                or die 'DBI connect failed';
-
             # dbi
-            my $db = DBIx::Simple->connect( $dbh )
-                or die DBIx::Simple->error;
+            my $db = Accounticious::Model->connect( @$db_config )
+                or die Accounticious::Model->error;
 
             $c->stash( db => $db );
 

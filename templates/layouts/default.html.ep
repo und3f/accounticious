@@ -1,4 +1,10 @@
 <!doctype html><html>
-    <head><title>Welcome</title></head>
-    <body><%== content %></body>
+    <head><title>Accounticious</title></head>
+    <body>
+        <ul>
+            <li><a href="<%== url_for('account') %>">balance</a></li>
+            <li><a href="<%== url_for('logout') %>">logout</a></li>
+        </ul>
+        <%== content %>
+    </body>
 </html>

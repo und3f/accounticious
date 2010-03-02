@@ -40,6 +40,7 @@ sub login_do {
             $self->session->extend_expires;
 
             $self->redirect( 'account' );
+            return;
 
         } else {
             $self->stash( error_code => 'INVALID' );
@@ -68,6 +69,8 @@ sub auth {
         $self->redirect( 'login' );
         return undef;
     }
+
+    $self->stash('user' => $self->db->getUserData( $self->session->data('user_id') ) );
 }
 
 1;

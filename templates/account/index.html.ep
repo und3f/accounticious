@@ -1,3 +1,29 @@
 % layout 'default';
 <h2>Welcome to Accounticious</h2>
-Will be done soon!
+<p>
+<h3>Account data</h3>
+
+% if ( my $error_code = stash('error_code') ) {
+%== $error_code;
+% }
+
+<p>
+    Account name: <%== $account->{name} %>
+        <a href="<%== url_for('history', account_id => stash('user')->{account} ) %>">[history]</a> <br />
+    Your balance: <br />
+% foreach my $balance (@{$account->{balance}}) {
+%== $balance->{amount} . ' ' . $balance->{currency};
+    <br />
+% }
+</p>
+
+<form method="get" action="<%== url_for('insert') %>">
+    <label for="insert_src">Source</label>: <input type="edit" name="src" value="<%== stash('src') || $account->{name} %>"  id="insert_src"> <br />
+    <label for="insert_dst">Destination</label>: <input type="edit" name="dst" id="insert_dst" value="<%== stash('dst') || '' %>"> <br />
+    <label for="insert_amount">Amount</label>: <input type="edit" name="amount" id="insert_amount" size="4" value="<%== stash('amount') || '0.00' %>"> <input type="edit" name="currency" value="<%== stash('currency') || '$' %>" size="1"> <br />
+    <label for="insert_comment">Comment</label>: <input type="edit" name="comment" id="insert_comment" value="<%== stash('comment') || '' %>"> <br /> <br />
+    <input type="submit" value="Do it">
+</form>
+
+
+</p>

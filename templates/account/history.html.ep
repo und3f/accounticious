@@ -1,0 +1,28 @@
+% layout 'default';
+
+<p>
+    Account name: <%== $account->{name} %>
+        <a href="<%== url_for('history', { account_id => $account->{id} }) %>">[history]</a> <br />
+    Balance: <br />
+% foreach my $balance (@{$account->{balance}}) {
+%== $balance->{amount} . ' ' . $balance->{currency};
+    <br />
+% }
+</p>
+<p>
+History: <br />
+
+<table border=1>
+    <th>Author</th><th>Date</th><th>Amount</th><th>Soure</th><th>Destination</th>
+% foreach my $r (@{$account->{history}}) {
+    <tr>
+        <td><%== $r->{user} %></td>
+        <td><%== $r->{created} %></td>
+        <td><%== $r->{amount} . ' ' . $r->{currency} %></td>
+        <td><a href="<%== url_for('history', {account_id => $r->{src_id}}) %>" ><%== $r->{src} %></a></td>
+        <td><a href="<%== url_for('history', {account_id => $r->{dst_id}}) %>" ><%== $r->{dst} %></a></td>
+    </tr>
+% }
+</table>
+</p>
+
