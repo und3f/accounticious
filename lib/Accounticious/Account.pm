@@ -38,6 +38,25 @@ sub insert_record {
     }
 }
 
+sub password {
+    my $self = shift;
+
+    my ($submit, $cur, $new, $new_ret) = @{$self->req->params->to_hash}{qw/ submit cur new new_ret /};
+
+    if ($submit) {
+        if ($new ne $new_ret) {
+            $self->stash(error_code => 'DOESNT_MATCH');
+        } elsif ( ! $self->db->checkLogin($self->stash('user')->{username}, $cur ) ) {
+            $self->stash(error_code => 'WRONG');
+        } else {
+            # Change that password
+            $self->db->changePassword( $self->stash('user')->{id}, $new );
+            $self->stash(error_code => 'OK');
+        }
+    }
+
+}
+
 sub history {
     my $self = shift;
 

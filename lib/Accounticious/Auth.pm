@@ -5,19 +5,6 @@ use warnings;
 
 use base 'Accounticious::Controller';
 
-use Digest::SHA1 ();
-
-sub check_login {
-    my ($self, $username, $password) = @_;
-    my ( $user_id ) = $self->db->query(q{
-        SELECT id
-        FROM user 
-        WHERE username = ? AND password = ?
-        LIMIT 1
-    }, $username, Digest::SHA1::sha1_base64($password) )->list;
-    return $user_id;
-}
-
 sub login_do {
     my $self = shift;
 
@@ -33,7 +20,7 @@ sub login_do {
         }
 
         # Try to login
-        if (my $user_id = $self->check_login( @{$p}{qw/ username password /} )) 
+        if (my $user_id = $self->db->checkLogin( @{$p}{qw/ username password /} )) 
         {
             $self->session->create;
             $self->session->data( user_id => $user_id );

@@ -6,6 +6,7 @@
     <body>
         <ul>
             <li><a href="<%== url_for('account') %>">balance</a></li>
+            <li><a href="<%== url_for('password') %>">password</a></li>
             <li><a href="<%== url_for('logout') %>">logout</a></li>
         </ul>
         <%== content %>

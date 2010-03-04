@@ -8,10 +8,34 @@ use DBIx::Simple;
 
 use base 'DBIx::Simple';
 
+use Digest::SHA1 ();
+
 sub new {
     my $class = shift;
     $class->SUPER::new( @_ );
 }
+
+sub checkLogin {
+    my ($self, $username, $password) = @_;
+    my ( $user_id ) = $self->query(q{
+        SELECT id
+        FROM user 
+        WHERE username = ? AND password = ?
+        LIMIT 1
+    }, $username, Digest::SHA1::sha1_base64($password) )->list;
+    return $user_id;
+}
+
+sub changePassword {
+    my ($self, $userid, $password) = @_;
+
+    $self->query(q{
+        UPDATE user
+        SET password = ?
+        WHERE id = ?
+    }, Digest::SHA1::sha1_base64($password), $userid );
+}
+
 
 sub getUserData {
     my ($self, $id) = @_;

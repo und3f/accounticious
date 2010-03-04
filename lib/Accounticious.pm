@@ -84,6 +84,10 @@ sub startup {
         ->to( 'account#insert_record' )
         ->name( 'insert' );
 
+    $auth->route('/account/password')
+        ->to( 'account#password' )
+        ->name( 'password' );
+
     $auth->route('/account/history/:account_id')
         ->to( 'account#history' )
         ->name( 'history' );
