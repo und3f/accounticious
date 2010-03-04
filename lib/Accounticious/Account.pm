@@ -23,14 +23,15 @@ sub insert_record {
         $error_code = 'REQUIRED' unless ($operation{$f} = $self->req->param($f));
     }
 
-    my $account = $self->db->getAccountData( $self->stash('user')->{id} );
     unless ($error_code) {
         # Do operation
         $self->db->executeTransaction( user => $self->stash('user')->{id}, %operation );
+        my $account = $self->db->getAccountData( $self->stash('user')->{id} );
         $self->render( account => $account, template => 'account/index', );
     }
     else {
         # print error
+        my $account = $self->db->getAccountData( $self->stash('user')->{id} );
         $self->render( account => $account, template => 'account/index',
             error_code => $error_code, %operation,
         );

@@ -20,7 +20,7 @@ sub getUserData {
 
 sub getAccountData {
     my ($self, $account_id) = @_;
-    my ($account_id, $account_name) = $self->query('SELECT account_id, account_name FROM account WHERE account_id = ?', $account_id)->list;
+    my $account_name = $self->query('SELECT account_name FROM account WHERE account_id = ?', $account_id)->list;
     my @balances = $self->query('SELECT currency, amount FROM balance WHERE account = ?', $account_id)->hashes;
     return {
         id      => $account_id,
@@ -63,7 +63,7 @@ sub executeTransaction {
 
     # Determine whatever account are present
     my $sql_select_acc_id = 'SELECT account_id FROM account WHERE account_name = ?';
-    my $sql_create_acc = 'INSERT INTO account(account_name, account_type) VALUES (?, ?)';
+    my $sql_create_acc = 'INSERT INTO account(account_name) VALUES (?)';
 
     my $src_acc = $operation{src};
     my $dst_acc = $operation{dst};
@@ -72,16 +72,14 @@ sub executeTransaction {
     # Source account ID
     my $src_id = $self->query($sql_select_acc_id, $src_acc)->list;
     unless ($src_id) {
-        # credit account
-        $self->query( $sql_create_acc, $src_acc, 0 );
+        $self->query( $sql_create_acc, $src_acc );
         my $src_id = $self->query($sql_select_acc_id, $src_acc)->list;
     }
 
     # Destination account ID
     my $dst_id = $self->query($sql_select_acc_id, $dst_acc)->list;
     unless ($dst_id) {
-        # debit account
-        $self->query( $sql_create_acc, $dst_acc, 1 );
+        $self->query( $sql_create_acc, $dst_acc );
         my $dst_id = $self->query($sql_select_acc_id, $dst_acc)->list;
     }
 

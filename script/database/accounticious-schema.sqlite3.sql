@@ -1,10 +1,10 @@
+PRAGMA ENCODING="UTF-8";
+
 -- Account
 -- Account name, id, possible something else...
 CREATE TABLE account (
     account_id INTEGER PRIMARY KEY,
-    account_name TEXT NOT NULL,
-    -- true for debit
-    account_type BOOL DEFAULT TRUE
+    account_name TEXT NOT NULL
 );
 
 -- Balance
@@ -85,3 +85,6 @@ CREATE TABLE session (
    UNIQUE(sid)
 );
 
+-- Create root user with password "root"
+INSERT INTO account VALUES (1, "root");
+INSERT INTO user VALUES( 1, "root", "3Hbp8MAAbo+RngxRXGbbujmC94U", 1 );

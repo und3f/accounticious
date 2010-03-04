@@ -28,9 +28,6 @@ sub startup {
     # Use latests templates
     $self->renderer->default_handler('ep');
 
-    # And nice encoding
-    $self->renderer->encoding('utf-8');
-
     # Logging
     $self->log->level( $config{loglevel} );
     $self->mode( 'production' ) if $self->log->level ne 'debug';

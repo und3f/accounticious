@@ -3,10 +3,6 @@
 <p>
 <h3>Account data</h3>
 
-% if ( my $error_code = stash('error_code') ) {
-%== $error_code;
-% }
-
 <p>
     Account name: <%== $account->{name} %>
         <a href="<%== url_for('history', account_id => stash('user')->{account} ) %>">[history]</a> <br />
@@ -16,6 +12,14 @@
     <br />
 % }
 </p>
+
+<div class="error">
+% if ( my $error_code = stash('error_code') ) {
+%   if ($error_code eq 'REQUIRED') {
+        Required fields are not filled
+%   }
+% }
+</div>
 
 <form method="get" action="<%== url_for('insert') %>">
     <label for="insert_src">Source</label>: <input type="edit" name="src" value="<%== stash('src') || $account->{name} %>"  id="insert_src"> <br />
