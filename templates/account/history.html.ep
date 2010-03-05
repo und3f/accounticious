@@ -13,7 +13,7 @@
 History: <br />
 
 <table border=1>
-    <th>Author</th><th>Date</th><th>Amount</th><th>Soure</th><th>Destination</th>
+    <th>Author</th><th>Date</th><th>Amount</th><th>Soure</th><th>Destination</th><th>Comment</th>
 % foreach my $r (@{$account->{history}}) {
     <tr>
         <td><%== $r->{user} %></td>
@@ -21,6 +21,7 @@ History: <br />
         <td><%== $r->{amount} . ' ' . $r->{currency} %></td>
         <td><a href="<%== url_for('history', {account_id => $r->{src_id}}) %>" ><%== $r->{src} %></a></td>
         <td><a href="<%== url_for('history', {account_id => $r->{dst_id}}) %>" ><%== $r->{dst} %></a></td>
+        <td><%= $r->{comment} %></td>
     </tr>
 % }
 </table>
