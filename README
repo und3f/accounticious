@@ -9,29 +9,39 @@ Content:
 6. Feedback
 
 1. About
-===========
-Accounticious is a accounting system based on Mojo web framework.
-Primary aims are to create simple, fast, easy and free accounting system.
+
+    Accounticious is a accounting system based on Mojo web framework.
+    Primary aims are to create simple, fast, easy and free accounting system.
+
 
 2. People
-===========
-Zasenko Sergey -- author.
+
+    Zasenko Sergey -- author.
+
 
 3. License
-===========
-See file LICENSE.
+
+    See file LICENSE.
+
 
 4. Installation/Run
-===========
+
+    To install accounticious do next things:
+
+    1. Create database (use one of script/database/accounticious-schema.*.sql
+    2. Create config. Use "accounticious.json" as example.
+    3. Setup your webserver to run accounticious
+    4. Enjoy!
 
 
 5. Links
-===========
-http://github.com/und3f/accounticious -- repo of project
-http://zendevelopment.ru -- site of zendevelopment group
+
+    http://github.com/und3f/accounticious -- repo of project
+    http://zendevelopment.ru -- site of zendevelopment group
+
 
 6. Feedback
-===========
-Jabber: und3f@jabber.org
-IRC: irc.perl.org #ru.pm
+
+    Jabber: und3f@jabber.org
+    IRC: irc.perl.org #ru.pm
 
