@@ -15,7 +15,7 @@ sub new {
     $class->SUPER::new( @_ );
 }
 
-sub checkLogin {
+sub check_login {
     my ($self, $username, $password) = @_;
     my ( $user_id ) = $self->query(q{
         SELECT id
@@ -26,7 +26,7 @@ sub checkLogin {
     return $user_id;
 }
 
-sub changePassword {
+sub change_password {
     my ($self, $userid, $password) = @_;
 
     $self->query(q{
@@ -37,12 +37,12 @@ sub changePassword {
 }
 
 
-sub getUserData {
+sub get_user_data {
     my ($self, $id) = @_;
     return $self->query('SELECT * FROM user WHERE id = ?', $id)->hash;
 }
 
-sub getAccountData {
+sub get_account_data {
     my ($self, $account_id) = @_;
     my $account_name = $self->query('SELECT account_name FROM account WHERE account_id = ?', $account_id)->list;
     my @balances = $self->query('SELECT currency, amount FROM balance WHERE account = ?', $account_id)->hashes;
@@ -53,9 +53,9 @@ sub getAccountData {
     };
 }
 
-sub getAccountHistory {
+sub get_account_history {
     my ($self, $account_id) = @_;
-    my $account = $self->getAccountData( $account_id );
+    my $account = $self->get_account_data( $account_id );
     $account->{history} = $self->query(
         q{
             SELECT 
@@ -77,7 +77,7 @@ sub getAccountHistory {
     return $account;
 }
 
-sub getOrCreateBalance {
+sub get_or_create_balance {
     my ($self, $name) = @_;
 
     # Get it
@@ -100,7 +100,7 @@ sub getOrCreateBalance {
 # 'user' - who made transaction
 # 
 
-sub executeTransaction {
+sub execute_transaction {
     my ($self, %operation) = @_;
 
     # Determine whatever account are present
@@ -109,10 +109,10 @@ sub executeTransaction {
 
 
     # Source account ID
-    my $src_id = $self->getOrCreateBalance( $src_acc );
+    my $src_id = $self->get_or_create_balance( $src_acc );
 
     # Destination account ID
-    my $dst_id = $self->getOrCreateBalance( $dst_acc );
+    my $dst_id = $self->get_or_create_balance( $dst_acc );
 
     # Do it in double record way
     $self->query(q{

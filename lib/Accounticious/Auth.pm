@@ -46,7 +46,7 @@ sub auth {
         return undef;
     }
 
-    $self->stash('user' => $self->db->getUserData( $user_id ) );
+    $self->stash('user' => $self->db->get_user_data( $user_id ) );
 }
 
 1;
