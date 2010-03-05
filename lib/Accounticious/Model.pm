@@ -77,6 +77,24 @@ sub getAccountHistory {
     return $account;
 }
 
+sub getOrCreateBalance {
+    my ($self, $name) = @_;
+
+    # Get it
+    if ( my $id = $self->query(
+            'SELECT account_id FROM account WHERE account_name = ?',
+            $name)->list
+    )
+    {
+        return $id;
+    }
+
+    # or create
+    $self->query('INSERT INTO account(account_name) VALUES (?)', $name)->list;
+    return $self->query( 'SELECT account_id FROM account WHERE account_name = ?', $name )
+        ->list;
+}
+
 # executeTransaction( $self, %operation );
 # fields of %operation:
 # 'user' - who made transaction
@@ -86,26 +104,15 @@ sub executeTransaction {
     my ($self, %operation) = @_;
 
     # Determine whatever account are present
-    my $sql_select_acc_id = 'SELECT account_id FROM account WHERE account_name = ?';
-    my $sql_create_acc = 'INSERT INTO account(account_name) VALUES (?)';
-
     my $src_acc = $operation{src};
     my $dst_acc = $operation{dst};
 
 
     # Source account ID
-    my $src_id = $self->query($sql_select_acc_id, $src_acc)->list;
-    unless ($src_id) {
-        $self->query( $sql_create_acc, $src_acc );
-        $src_id = $self->query($sql_select_acc_id, $src_acc)->list;
-    }
+    my $src_id = $self->getOrCreateBalance( $src_acc );
 
     # Destination account ID
-    my $dst_id = $self->query($sql_select_acc_id, $dst_acc)->list;
-    unless ($dst_id) {
-        $self->query( $sql_create_acc, $dst_acc );
-        $dst_id = $self->query($sql_select_acc_id, $dst_acc)->list;
-    }
+    my $dst_id = $self->getOrCreateBalance( $dst_acc );
 
     # Do it in double record way
     $self->query(q{
