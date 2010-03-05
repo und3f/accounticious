@@ -14,7 +14,7 @@ sub login_do {
         && defined $p->{password} && $p->{password} ne '' ) {
 
         # Try to login
-        if (my $user_id = $self->db->checkLogin( @{$p}{qw/ username password /} )) 
+        if (my $user_id = $self->db->check_login( @{$p}{qw/ username password /} )) 
         {
             $self->session( user_id => $user_id );
 
