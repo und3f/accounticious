@@ -41,6 +41,7 @@ sub startup {
             {
                 PrintWarn  => 1,
                 PrintError => 1,
+                AutoCommit => 1,
             }, 
         ]
     );
