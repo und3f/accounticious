@@ -12,7 +12,6 @@ use base 'Mojolicious';
 
 my %config = (
     loglevel        => 'debug',
-    session_expires => 60 * 60 * 24 * 3,
 );
 
 # This method will run once at server start
@@ -24,6 +23,9 @@ sub startup {
     
     # Load configuration
     %config = ( %config, %{$self->plugin('json_config')} );
+
+    # Init secret for cookies
+    $self->secret( $config{secret} );
 
     # Use latests templates
     $self->renderer->default_handler('ep');
@@ -43,19 +45,6 @@ sub startup {
         ]
     );
 
-    # Install sessions
-    $self->plugin(
-        session => {
-            stash_key       => 'session',
-            store           => 'dbi',
-            expires_delta   => $config{session_expires},
-            init            => sub {
-                my ( $self, $session ) = @_;
-                $session->store->dbh( $self->stash->{db}->dbh );
-            },
-        }
-    );
-    
     # Routes
     my $r = $self->routes;
 

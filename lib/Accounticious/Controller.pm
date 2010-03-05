@@ -8,9 +8,6 @@ use base 'Mojolicious::Controller';
 __PACKAGE__->attr( db => sub {
         return shift->stash->{db};
 });
-__PACKAGE__->attr( session => sub {
-        return shift->stash->{session};
-});
 
 sub new {
     my $class = shift;

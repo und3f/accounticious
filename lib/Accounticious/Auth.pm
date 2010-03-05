@@ -13,18 +13,10 @@ sub login_do {
     if ( defined $p->{username} && $p->{username} ne ''
         && defined $p->{password} && $p->{password} ne '' ) {
 
-        # Clear old session
-        if ( $self->session->load ) {
-            $self->session->expire;
-            $self->session->flush;
-        }
-
         # Try to login
         if (my $user_id = $self->db->checkLogin( @{$p}{qw/ username password /} )) 
         {
-            $self->session->create;
-            $self->session->data( user_id => $user_id );
-            $self->session->extend_expires;
+            $self->session( user_id => $user_id );
 
             $self->redirect( 'account' );
             return;
@@ -42,22 +34,19 @@ sub login_do {
 sub logout {
     my $self = shift;
 
-    if ($self->session->load) {
-        $self->session->expire;
-        $self->session->flush;
-    }
+    $self->session( expires => 1 );
     $self->redirect( 'login' );
 }
 
 sub auth {
     my $self = shift;
-
-    unless ($self->session->load) {
+    my $user_id = $self->session('user_id');
+    unless ($user_id) {
         $self->redirect( 'login' );
         return undef;
     }
 
-    $self->stash('user' => $self->db->getUserData( $self->session->data('user_id') ) );
+    $self->stash('user' => $self->db->getUserData( $user_id ) );
 }
 
 1;

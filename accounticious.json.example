@@ -1,4 +1,5 @@
 {
+    "secret" : "Change this text for security purposes", <%# Really! Do it! %>
     "db" : [
         "dbi:SQLite:/home/und3f/projects/accounticious/database.db",
 %#      username

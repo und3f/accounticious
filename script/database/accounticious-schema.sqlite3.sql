@@ -78,13 +78,6 @@ CREATE TABLE user (
     FOREIGN KEY (account) REFERENCES account(account_id)
 );
 
-CREATE TABLE session (
-   sid          VARCHAR(40) PRIMARY KEY,
-   data         TEXT,
-   expires      INTEGER UNSIGNED NOT NULL,
-   UNIQUE(sid)
-);
-
 -- Create root user with password "root"
 INSERT INTO account VALUES (1, "root");
 INSERT INTO user VALUES( 1, "root", "3Hbp8MAAbo+RngxRXGbbujmC94U", 1 );
