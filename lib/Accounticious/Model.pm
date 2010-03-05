@@ -97,14 +97,14 @@ sub executeTransaction {
     my $src_id = $self->query($sql_select_acc_id, $src_acc)->list;
     unless ($src_id) {
         $self->query( $sql_create_acc, $src_acc );
-        my $src_id = $self->query($sql_select_acc_id, $src_acc)->list;
+        $src_id = $self->query($sql_select_acc_id, $src_acc)->list;
     }
 
     # Destination account ID
     my $dst_id = $self->query($sql_select_acc_id, $dst_acc)->list;
     unless ($dst_id) {
         $self->query( $sql_create_acc, $dst_acc );
-        my $dst_id = $self->query($sql_select_acc_id, $dst_acc)->list;
+        $dst_id = $self->query($sql_select_acc_id, $dst_acc)->list;
     }
 
     # Do it in double record way
