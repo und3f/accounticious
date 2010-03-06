@@ -2,7 +2,6 @@ package Accounticious::Account;
 
 use strict;
 use warnings;
-use utf8;
 
 use base 'Accounticious::Controller';
 
